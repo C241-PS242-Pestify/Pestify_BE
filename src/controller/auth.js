@@ -5,10 +5,31 @@ const bcrypt = require("bcryptjs");
 require("dotenv").config();
 const secretKey = process.env.SECRET_KEY;
 
-//register
+const register = async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
 
+    const existingUser = await prisma.user.findFirst({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
 
-//login
+    const hashedPassword = await bcrypt.hash(password, 8);
+
+    const newUser = await prisma.user.create({
+      data: { username, email, password: hashedPassword },
+    });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      newUser,
+    });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -48,7 +69,7 @@ const login = async (req, res) => {
   }
 };
 
-//updateAccount
+
 const updateAccount = async (req, res) => {
   try {
     const { userId } = req.user;

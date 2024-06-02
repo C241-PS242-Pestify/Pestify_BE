@@ -1,9 +1,32 @@
 const prisma = require("../prisma");
 
-//createArticle
+const createArticle = async (req, res) => {
+  try {
+    const { title, tags, teks_article, picture } = req.body;
 
+    const newArticle = await prisma.article.create({
+      data: { title, tags, teks_article, picture },
+    });
 
-//getAll
+    res.status(201).json({
+      message: "Article created successfully",
+      newArticle,
+    });
+  } catch (error) {
+    console.error("Error creating article:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const getAllArticles = async (req, res) => {
+  try {
+    const articles = await prisma.article.findMany();
+    res.json(articles);
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 const getArticleById = async (req, res) => {
   try {
@@ -36,7 +59,16 @@ const updateArticle = async (req, res) => {
   }
 };
 
-//delete
+const deleteArticle = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await prisma.article.delete({ where: { id: parseInt(id) } });
+    res.json({ message: "Article deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting article:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 const searchArticles = async (req, res) => {
   try {
