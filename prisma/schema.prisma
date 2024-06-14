@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -14,19 +15,62 @@ datasource db {
 }
 
 model User{
-  id        Int @id @default(autoincrement())
-  username  String
-  email     String
-  password  String
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  id              String @id @default(uuid())
+  username        String
+  email           String
+  password        String
+  profile_Photo   String?
+  createdAt       DateTime @default(now())
+  updateAt        DateTime @updatedAt
+  history         History[]
+}
+
+model Plants{
+  id              String @id @default(uuid())
+  title           String
+  description     String
+  picture         String
 }
 
 model Article{
-  id            Int @id @default(autoincrement())
+  id            String @id @default(uuid())
   title         String
   tags          String
-  teks_article  String
+  description   String
   picture       String
   createdAt     DateTime @default(now())
+}
+
+enum Tags {
+  Story
+  Tips
+  Lifestyle
+}
+
+model Pest_Detection{
+  id                String @id @default(uuid())
+  pest_name         String
+  pest_description  String
+  pest_cause        String
+  pest_effect       String
+  Solution          String
+  confidenceScore   Float
+  history           History[]
+}
+
+model History{
+  id          String @id @default(uuid())
+  user        User @relation(fields:[userId], references: [id])
+  userId      String
+  pest        Pest_Detection @relation(fields:[pestId], references: [id])
+  pestId      String
+}
+
+model Ensiklopedia{
+  id                        String @id @default(uuid())
+  title                     String
+  description               String
+  picture                   String
+  additionalDescription1    String?
+  additionalDescription2    String?
 }
