@@ -19,7 +19,7 @@ model User{
   username        String
   email           String
   password        String
-  profile_Photo   String?
+  profile_Photo   Bytes?
   createdAt       DateTime @default(now())
   updateAt        DateTime @updatedAt
   history         History[]
