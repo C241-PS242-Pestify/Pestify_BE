@@ -1,7 +1,6 @@
 const express = require('express');
 const authenticateToken = require('../middleware/authToken');
 const detailController = require('../controller/detailUser');
-const upload  = require('../middleware/uploadPhoto');
 
 const router = express.Router();
 
