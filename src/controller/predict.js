@@ -5,7 +5,7 @@ const InputError = require("../exceptions/InputError");
 
 const handlePredict = async (req, res) => {
   try {
-    const image = req.file.buffer;
+    const image = req.file ? req.file.buffer : null;
     const model = await loadModel();
 
     if (!image) {
@@ -21,6 +21,8 @@ const handlePredict = async (req, res) => {
       solution,
     } = await predictClassification(model, image);
 
+    const additional_image = req.body.additional_image || null;
+
     const data = {
       pest_name: pest_name,
       pest_description: pest_description,
@@ -28,6 +30,7 @@ const handlePredict = async (req, res) => {
       pest_effect: pest_effect,
       solution: solution,
       confidenceScore: confidenceScore,
+      additional_image: additional_image,
     };
 
     const prediction = await prisma.Pest_Detection.create({
@@ -38,6 +41,7 @@ const handlePredict = async (req, res) => {
         pest_effect: data.pest_effect,
         Solution: data.solution,
         confidenceScore: data.confidenceScore,
+        additional_image: data.additional_image,
       },
     });
 
@@ -54,7 +58,7 @@ const handlePredict = async (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     }
   }
-};
+}
 
 const savePrediction = async (req, res) => {
   try {

@@ -30,33 +30,29 @@ const getUserInfo = async (req, res) => {
 
 const updateProfilePhoto = async (req, res) => {
   try {
-    if (!req.file) {
-      throw new InputError('Profile photo is required');
-    }
+    const { profile_Photo } = req.body;
 
-    const profilePhoto = req.file.encoding;
+    if (!profile_Photo) {
+      throw new InputError("Profile photo is required");
+    }
 
     const updatedUser = await prisma.user.update({
       where: { id: req.user.userId },
-      data: { profile_Photo: profilePhoto },
+      data: { profile_Photo },
     });
 
     res.status(200).json({
-      message: 'Profile photo updated successfully',
+      message: "Profile photo updated successfully",
       updatedUser,
     });
   } catch (error) {
-    if (error instanceof InputError || error.code === 'P2025') {
-      res.status(400).json({ error: error.message });
-    } else if (error instanceof multer.MulterError) {
-      if (error.code === 'LIMIT_FILE_SIZE') {
-        res.status(400).json({ error: 'File size exceeds limit of 5MB' });
-      } else {
-        res.status(500).json({ error: 'Multer error: ' + error.message });
-      }
+    if (error instanceof ClientError) {
+      res.status(error.statusCode).json({ error: error.message });
+    } else if (error.code === "P2025") {
+      res.status(404).json({ error: "User not found" });
     } else {
-      console.error('Error updating profile photo:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error updating profile photo:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   }
 };

@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.get('/user-info', authenticateToken, detailController.getUserInfo);
 
-router.put('/update-photo', authenticateToken, upload.single('profile_Photo'), detailController.updateProfilePhoto);
+router.put('/update-photo', authenticateToken, detailController.updateProfilePhoto);
 
 module.exports = router;

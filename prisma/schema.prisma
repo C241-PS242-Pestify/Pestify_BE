@@ -19,7 +19,7 @@ model User{
   username        String
   email           String
   password        String
-  profile_Photo   Bytes?
+  profile_Photo   String?
   createdAt       DateTime @default(now())
   updateAt        DateTime @updatedAt
   history         History[]
@@ -55,6 +55,7 @@ model Pest_Detection{
   pest_effect       String
   Solution          String
   confidenceScore   Float
+  additional_image  String?
   history           History[]
 }
 
