@@ -14,5 +14,4 @@ https://documenter.getpostman.com/view/29560498/2sA3Qy4Tn4
 - Multer
 - MySQL2
 - Nodemon
-## ERD & EERD
 
